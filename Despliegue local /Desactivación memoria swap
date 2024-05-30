@@ -1,3 +1,6 @@
 sudo su
   sudo swapoff -a
   exit
+sudo nano /etc/ftsab
+  Comentar esta línea en el archivo #/swap.img      none    swap    sw      0       0
+sudo free -h
