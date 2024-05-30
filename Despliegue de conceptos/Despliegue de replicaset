@@ -1,0 +1,26 @@
+sudo nano replicaset-hugo.yaml
+
+apiVersion: apps/v1 #Version de la API
+kind: ReplicaSet #Tipo de controlador creado
+metadata: #Información del controlador
+  name: hugo-replica #Nombre del controlador
+  labels: #Campos de etiqueta
+    app: appmuestrahugo6 #Etiqueta app
+spec: #Caracteristicas del objeto ReplicaSet
+  replicas: 3 #Numero de replicas que mantendra en funcionamiento
+  selector: #Selector de pods segun sus etiquetas
+    matchLabels: #Etiquetas que buscara en los pods para asignar este controlador
+      app: appmuestrahugo6 #Etiqueta app
+  template: #Plantilla para crear pods
+    metadata: #Metadata de los pods que creara
+      labels: #Campos de etiqueta
+        app: appmuestrahugo6 #Etiqueta app
+    spec: #Especificaciones de los contenedores dentro de los pods
+      containers: #Contenedores
+      - name: contenedor-hugo-replica #Nombre del contenedor
+        image: nginx:1.8 #Imagen del contenedor
+
+kubectl apply -f replicaset-hugo.yaml
+kubectl get pods 
+kubectl delete pod "nombre del pod" 
+kubectl get pods 
