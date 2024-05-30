@@ -1,0 +1,38 @@
+sudo nano statefulset-hugo.yaml
+
+apiVersion: apps/v1 #Version API y grupo
+kind: StatefulSet #Tipo de controlador
+metadata: #Metadatos del controlador
+  name: hugo-stateful  #Nombre del controlador
+spec:  #Caracteristicas del statefulset
+  selector: #Selector de pods segun etiquetas
+    matchLabels:  #Los campos labels que tiene que coincidir en los pods para ser seleccionados por este controlador
+      app: appmuestrahugo8 #Nombre de la app de los pods
+  replicas: 3  #Numero de replicas que se crearan y que mantendra
+  template: #Plantilla para crear los pods
+    metadata: #Metadata en los pods
+      labels:  #Campos de etiqueta
+        app: appmuestrahugo8 #Etiqueta app
+    spec: #Especificaciones de los contenedores
+      containers: #Contenedores
+      - name: containerhugo #Nombre del contenedor
+        image: nginx:1.8 #Imagen + version
+        ports:  #Configuracion de los puertos del contenedor
+        - containerPort: 8080 #Puerto por el cual escuchara el contenedor
+        volumeMounts:  #Montado de volumen
+        - mountPath: /usr/share/volumes #Directorio donde montara el volumen el contenedor
+          name: hugo-pvc2 #Nombre del volumen
+  volumeClaimTemplates: #Plantilla del volumeClaim
+  - metadata: #Metadata del volumen
+      name: hugo-pvc2 #Nombre del volumen
+    spec: #Especificaciones del pvc
+      accessModes: #Modo de acceso del pvc
+      - ReadWriteOnce
+      resources: #Campos de recursos
+        requests: #Recursos que solicita a la cloud
+          storage: 1Gi  #Tamaño de los recursos
+      storageClassName: do-block-storage #Nomre de la clase de almacenamiento en este caso
+#tiene ese nombre con las siglas de do referenciando a digital ocean que es el proveedor cloud
+
+kubectl apply -f statefulset-hugo.yaml
+kubectl get pods 
