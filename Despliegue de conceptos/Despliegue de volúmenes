@@ -1,0 +1,114 @@
+sudo nano hostpath-pod-hugo.yaml
+
+apiVersion: v1 #Version API
+kind: Pod #Tipo de Objeto
+metadata: #Metadatos del pod
+  name: hostpathpod #Nombre del pod
+  labels: #Campos con etiquetas
+    app: appmuestrahugo2 #Etiqueta app
+spec: #Especificaciones del pod
+  containers: #Contenedores que ejecutara el pod
+    - name: conetendor-hugo #Nombre del contenedor
+      image: nginx:1.8 #Imagen del contenedor
+      ports: #Listado de puertos
+        - containerPort: 8080 #Puerto por el que escuchara el contedor
+      volumeMounts: #Montado de volumen
+      - mountPath: /usr #Directorio donde se montara el volumen en el contenedor
+        name: volumen-hostpath-hugo #Nombre del volumen
+
+
+  volumes: #Volumen a crear
+  - name: volumen-hostpath-hugo #Nombre
+    hostPath: #Ruta en el nodo
+      path: /www #Ruta
+      type: Directory #Tipo
+      ports: #Listado de puertos
+
+kubectl apply -f hostpath-pod-hugo.yaml
+kubectl get pods 
+
+sudo nano secret-hugo.yaml
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secrethugo
+type: Opaque
+data:
+  password: contrasena1234
+
+kubectl apply -f secret-hugo.yaml
+kubectl get secrets 
+
+sudo nano secreto-en-pod-hugo.yaml
+
+apiVersion: v1 #Version API
+kind: Pod #Tipo de Objeto
+metadata: #Metadatos del pod
+  name: secreto-en-pod #Nombre del pod
+  labels: #Campos con etiquetas
+    app: appmuestrahugo3 #Etiqueta app
+spec: #Especificaciones del pod
+  containers: ##Contenedores que ejecutara el pod
+  - name: contenedor-hugo #Nombre del contenedor
+    image: nginx:1.8 #Imagen del contenedor
+    env: #Campos de variables
+    - name: MI_VARIABLE #Nombre de la variable que obtiene el valor del campo value
+      value: "root" #Valor que obtiene la variable
+    - name: MYSQL_USER #Nombre de la variable que obtiene el valor del secret
+      valueFrom: #Variable del secret
+        secretKeyRef: #Referencia de la clave
+          name: algosecreto #Nombre del secret
+          key: username #Campo del secret donde esta la infromacion de usuario
+    - name: MYSQL_PASSWORD ##Nombre de la variable que obtiene el valor del secret
+      valueFrom:  #Variable del secret
+        secretKeyRef: #Referencia de la clave
+          name: algosecreto #Nombre del secret
+          key: password  #Campo del secret donde esta la infromacion de la contraseña
+    ports: #Listado de puertos
+    - containerPort: 8080 #Puerto por el que escuchara el contenedor
+
+kubectl apply -f secreto-en-pod-hugo.yaml
+kubectl get pods 
+kubectl exec -it secreto-en-pod -- sh 
+
+sudo nano pvc-hugo.yaml
+
+apiVersion: v1 #Version API
+kind: PersistentVolumeClaim #Tipo de Objeto
+metadata:  #Metadatos del pvc
+  name: hugo-pvc #Nombre del pvc
+spec:  #Especificaciones del pvc
+  accessModes: #Modo de acceso del pvc
+  - ReadWriteOnce
+  resources: #Campos de recursos
+    requests: #Recursos que solicita a la cloud
+      storage: 1Gi #Tamaño de los recursos
+  storageClassName: do-block-storage #Nomre de la clase de almacenamiento en este caso
+#tiene ese nombre con las siglas de do referenciando a digital ocean que es el proveedor cloud
+
+kubectl apply -f pvc-hugo.yaml
+kubectl get pvc 
+
+sudo nano pvc-pod-hugo.yaml
+
+apiVersion: v1 #Version API
+kind: Pod #Tipo de Objeto
+metadata: #Metadatos del pod
+  name: pod0hugo #Nombre del pod
+  labels: #Campos con etiquetas
+    app: appmuestrahugo10 #Etiqueta app
+spec: #Especificaciones del pod
+  containers: #Contenedores que ejecutara el pod
+    - name: conetendor-hugo #Nombre del contenedor
+      image: nginx:1.8 #Imagen del contenedor
+      volumeMounts: #Montado de volumen
+      - mountPath: /usr/share/nginx #Directorio donde montara el volumen el contenedor
+        name: hugo-pvc #Nombre del volumen
+
+  volumes: #Volumen a crear
+  - name: hugo-pvc #Nombre del volumen
+    persistentVolumeClaim: #Datos del claim del volumen
+      claimName: hugo-pvc #Nombre del volumen que este pod solicitara
+
+kubectl get pods -o wide 
