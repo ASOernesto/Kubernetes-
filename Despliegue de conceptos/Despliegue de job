@@ -1,0 +1,21 @@
+sudo nano job-hugo.yaml
+
+apiVersion: batch/v1 #Version de la API y grupo en el que se despliega el job
+kind: Job #Tipo de controlador
+metadata: #Metadatos del controlador
+  name: hugojob #Nombre del controlador
+spec: #Especificaciones del job
+  template: #Plantilla para crear el pod
+    spec: #Especificaciones del pod
+      containers: #Contenedores del pod
+      - name: hugojob #Nombre del contenedor
+        image: perl #Imagen del contenedor
+        command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"] #Comando del contenedor
+      restartPolicy: Never #Politica que determina que los pods no se reiniciaran si fallan
+  backoffLimit: 4 #Numero de veces que kubernetes intentara volver a ejecutar el pod si falla
+  ttlSecondsAfterFinished: 100 #Tiempo en segundos que esperara kubernetes antes de eliminar
+#el job y el pod una vez terminada la ejecucion del comando
+
+kubectl apply -f job-hugo.yaml
+kubectl get pods 
+kubectl logs "nombre pod del job"
