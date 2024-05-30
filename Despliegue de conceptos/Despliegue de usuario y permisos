@@ -1,0 +1,35 @@
+kubectl config set-context userhugo-prueba-context --namespace=usuarios --user=userhugo-prueba
+sudo nano rol-userhugo.yaml
+
+apiVersion: v1 #Version API
+kind: Pod #Tipo de Objeto
+metadata: #Metadatos del pod
+  name: userhugo-role #Nombre del pod
+  labels: #Campos de etiquetas
+    app: appmuestrahugo #Etiqueta app
+spec: #Especificaciones del pod
+  containers: #Contenedores que ejecutara el pod
+    - name: conetendor-hugo #Nombre del contenedor
+      image: nginx:1.8 #Imagen del contenedor
+      ports: #Listado de puertos
+        - containerPort: 8080 #Puerto por el que escuchara el contedor
+
+kubectl apply -f rol-userhugo.yaml
+sudo nano rolebinding-userhugo.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1 #Version API y grupo
+kind: ClusterRoleBinding #Tipo de objeto
+metadata: #Metadatos del objeto
+  name: rolebindinguserhugo #Nombre del objeto
+subjects: #Sujetos que determinan a quien se le asigna que rol
+- kind: User #Usuario al que se le asigna el rol
+  name: userhugo-prueba #Nombre del usuario
+  apiGroup: ""
+roleRef: #Que rol va a asignar
+  kind: ClusterRole #Tipo de rol
+  name: userhugo-role #Nombre del rol creado anteriormente
+  apiGroup: ""
+
+kubectl apply -f rolebinding-userhugo.yaml
+kubectl select contexts "seleccionar nuevo usuario"
+kubectl get nodes 
