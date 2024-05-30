@@ -1,8 +1,0 @@
-masternode
-sudo hostname k8scp
-
-workernode1
-sudo hostname k8scp1
-
-workernode2
-sudo hostname k8scp2
