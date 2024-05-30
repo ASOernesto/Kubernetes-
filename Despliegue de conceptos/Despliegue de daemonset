@@ -1,0 +1,22 @@
+sudo nano daemonset-hugo.yaml
+
+apiVersion: apps/v1 #Version API
+kind: DaemonSet #Controlador Creado
+metadata: #Datos sobre el controlador
+  name: hugo-daemon-pod #Nombre del controlador
+spec: #Especificaciones del controlador
+  selector: #Selector de pods segun etiquetas
+    matchLabels: #Campos labels que tienen que coincidir con los pods
+      app: appmuestrahugo7 #Nombre de la etiqueta
+  template: #Plantilla de creación de pods
+    metadata: #Metadatos de los pods
+      labels: #Etiquetas de los pods
+        app: appmuestrahugo7 #Nombre de los pods
+    spec: #Especificaciones de los pods
+      containers: #Contenedores que se ejecutaran en los pods
+      - name: containerhugo #Nombre del contenedor
+        image: nginx:1.8 #Imagen del contenedor
+
+kubectl apply -f daemonset-hugo.yaml
+kubectl get pods 
+kubectl get pods -o wide 
