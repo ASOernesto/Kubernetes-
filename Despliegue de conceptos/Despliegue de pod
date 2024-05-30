@@ -1,0 +1,18 @@
+sudo nano pod-0-hugo.yaml
+  apiVersion: v1 #Version API
+  kind: Pod #Tipo de Objeto
+  metadata: #Metadatos del pod
+    name: pod0hugo #Nombre del pod
+    labels: #Campos de etiquetas
+      app: appmuestrahugo #Etiqueta app
+  spec: #Especificaciones del pod
+    containers: #Contenedores que ejecutara el pod
+      - name: conetendor-hugo #Nombre del contenedor
+        image: nginx:1.8 #Imagen del contenedor
+        ports: #Listado de puertos
+          - containerPort: 8080 #Puerto por el que escuchara el contedor
+
+kubectl apply -f pod-0-hugo.yaml
+kubectl get pods 
+kubectl describe pod0hugo
+kubectl delete pod0hugo 
