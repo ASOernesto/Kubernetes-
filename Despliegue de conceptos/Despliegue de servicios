@@ -1,0 +1,86 @@
+sudo nano pod-1-hugo.yaml
+  apiVersion: v1 #Version API
+  kind: Pod #Tipo de Objeto
+  metadata: #Metadatos del pod
+    name: pod1hugo #Nombre del pod
+    labels: #Campos con etiquetas
+      app: appmuestrahugo #Etiqueta app
+  spec: #Especificaciones del pod
+    containers: #Contenedores que ejecutara el pod
+      - name: conetendor-hugo #Nombre del contenedor
+        image: nginx:1.8 #Imagen del contenedor
+        ports: #Listado de puertos
+          - containerPort: 8080 #Puerto por el que escuchara el contedor
+
+kubectl apply -f pod-1-hugo.yaml
+kubectl get pods -o wide
+
+sudo nano servicio-simple-hugo.yaml
+  apiVersion: v1 #Version API
+  kind: Service #Tipo de objeto
+  metadata: #Metadatos del servicio
+    name: servicio-simple-hugo #Nombre del servicio
+  spec: #Especificacion del servicio
+    selector: #Selector de etiquetas que deben tener los pods para ser asociados a este servicio
+      app: appmuestrahugo #Etiqueta en los pods
+    ports: #Puertos donde escuchara el servicio y a donde redirigira el trafico
+      - protocol: TCP #Tipo de protocolo de red
+        port: 80 #Puerto en el que escucha el servicio
+        targetPort: 8080 #Puerto al que redirige el trafico en los pods
+                         #(debe estar habilitado este puerto en los contenedores)
+
+kubectl apply -f servicio-simple-hugo.yaml
+kubectl describe service servicio-simple-hugo
+
+sudo nano servicio-NodePort-hugo.yaml
+  apiVersion: v1 #Version API
+  kind: Service #Tipo de Objeto
+  metadata: #Metadatos del servicio
+    name: servicio-nodeport-hugo #Nombre del servicio
+  spec: #Especificaciones del servicio
+    type: NodePort #Tipo de servicio
+    selector: #Etiquetas que deben tener los pods para ser asociados a este servicio
+      app: appmuestrahugo #Etiqueta en los pods
+    ports: #Puertos donde escuchara el servicio y a donde redirigira el trafico
+      - port: 80 #Puerto en el que escucha el servicio
+        targetPort: 8080  #Puerto al que redirige el trafico
+        nodePort: 30007 #Puerto por el que sera accesible al servicio en cada nodo
+
+kubectl apply -f servicio-NodePort-hugo.yaml
+kubectl describe service servicio-nodeport-hugo
+
+sudo nano pod-load-balancer-hugo.yaml
+  apiVersion: v1 #Version API
+  kind: Pod #Tipo de Objeto
+  metadata: #Metadatos del pod
+    name: podhugoloadbalancer #Nombre del pod
+    labels: #Campos con etiquetas
+      app: appmuestrahugo7 #Etiqueta app
+  spec: #Especificaciones del pod
+    containers: #Contenedores que ejecutara el pod
+      - name: conetendor-hugo #Nombre del contenedor
+        image: nginx:1.8 #Imagen del contenedor
+        ports: #Listado de puertos
+          - containerPort: 8080 #Puerto por el que escuchara el contenedor
+
+kubectl apply -f pod-load-balancer-hugo.yaml
+kubectl get pods -o wide
+
+sudo nano servicio-loadbalancer-hugo.yaml
+  apiVersion: v1 #Version API
+  kind: Service #Tipo de Objeto
+  metadata: #Metadatos del servicio
+    name: servicio-loadbalancer-hugo #Nombre del servicio
+  spec: #Especificaciones del servicio
+    type: LoadBalancer #Tipo de servicio
+    selector: #Etiquetas que deben tener los pods para ser asociados a este servicio
+      app: appmuestrahugo7 #Etiqueta en los pods
+    ports: #Puertos donde escuchara el servicio y a donde redirigira el trafico
+      - protocol: TCP #Tipo de protocolo de red
+        port: 80 #Puerto en el que escucha el servicio
+        targetPort: 8080 #Puerto al que redirige el trafico
+
+kubectl apply -f servicio-loadbalancer-hugo.yaml
+kubectl get services 
+kubectl describe service servicio-loadbalancer-hugo
+
