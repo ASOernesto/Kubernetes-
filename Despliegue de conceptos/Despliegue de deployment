@@ -1,0 +1,54 @@
+sudo nano deployment-hugo.yaml  
+
+apiVersion: apps/v1 #Version API
+kind: Deployment #Tipo de controlador
+metadata: #Metadatos del controlador
+  name: deployment-hugo #Nombre del controlador
+  labels: #Etiquetas para distinguir el controlador dentro del cluster
+    app: appmuestrahugo5 #Etiqueta app por nombre
+spec: #Caracteristicas del deployment
+  replicas: 2 #Numero de replicas que se crearan y que mantendra
+  selector: #Selector de pods segun etiquetas
+    matchLabels: #Los campos labels que tiene que coincidir con los pods
+      app: appmuestrahugo5 #Nombre de la app de los pods
+  template: #Plantilla para crear los pods
+    metadata: #Metadata en los pods
+      labels: #Labels en los pods
+        app: appmuestrahugo5 #Nombre de la app
+    spec: #Especificaciones de los contenedores
+      containers:
+      - name: nginx #Nombre del contenedor
+        image: nginx #Imagen + version
+        ports: #Configuracion de los puertos del contenedor
+        - containerPort: 8080 #Puerto por el cual escuchara el contenedor
+
+kubectl apply -f deployment-hugo.yaml
+kubectl get pods 
+kubectl describe deployment-hugo
+sudo nano deployment-hugo.yaml
+
+apiVersion: apps/v1 #Version API
+kind: Deployment #Tipo de controlador
+metadata: #Metadatos del controlador
+  name: deployment-hugo #Nombre del controlador
+  labels: #Etiquetas para distinguir el controlador dentro del cluster
+    app: appmuestrahugo5 #Etiqueta app por nombre
+spec: #Caracteristicas del deployment
+  replicas: 4 #Numero de replicas que se crearan y que mantendra
+  selector: #Selector de pods segun etiquetas
+    matchLabels: #Los campos labels que tiene que coincidir con los pods
+      app: appmuestrahugo5 #Nombre de la app de los pods
+  template: #Plantilla para crear los pods
+    metadata: #Metadata en los pods
+      labels: #Labels en los pods
+        app: appmuestrahugo5 #Nombre de la app
+    spec: #Especificaciones de los contenedores
+      containers:
+      - name: nginx #Nombre del contenedor
+        image: nginx:1.8 #Imagen + version
+        ports: #Configuracion de los puertos del contenedor
+        - containerPort: 8080 #Puerto por el cual escuchara el contenedor
+
+kubectl apply -f deployment-hugo.yaml
+kubectl get pods 
+kubectl describe deployment-hugo
